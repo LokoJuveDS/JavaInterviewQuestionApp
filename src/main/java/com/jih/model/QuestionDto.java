@@ -1,7 +1,7 @@
 package com.jih.model;
 
-public record QuestionAnswerDto(
-        int number,
+public record QuestionDto(
+        Long id,
         String question,
         String answer) {
 }
