@@ -1,5 +1,6 @@
 package com.jih.repository;
 
+import com.jih.exception.QuestionNotFoundException;
 import com.jih.model.QuestionDto;
 import org.springframework.stereotype.Repository;
 
@@ -19,11 +20,13 @@ public class QuestionRepository {
     }
 
     public QuestionDto findById(Long id) {
-        if (questions.containsKey(id)) {
-            return questions.get(id);
-        } else {
-            throw new RuntimeException("Question not found with id: " + id);
+        QuestionDto questionDto = questions.get(id);
+
+        if (questionDto == null) {
+            throw new QuestionNotFoundException(id);
         }
+
+        return questionDto;
     }
 
     public List<QuestionDto> findAll() {
