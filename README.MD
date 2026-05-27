@@ -23,7 +23,29 @@ The project is currently focused on CLI-based interaction, but the structure is 
 - Maven
 - Lombok
 
-## How to Run
+## Running Locally
+
+1. **Start a PostgreSQL instance**
 
 ```bash
-mvn spring-boot:run
+docker-compose up -d
+```
+
+2. **Build and run the application**:
+
+```bash
+./mvnw spring-boot:run
+```
+
+3. **To stop and wipe all data**:
+
+```bash
+# ⚠️ Destroys postgres_data volume
+docker-compose down -v
+```
+
+4. To stop while **keeping data**:
+
+```bash
+docker-compose down
+```

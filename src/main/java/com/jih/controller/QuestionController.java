@@ -1,7 +1,7 @@
 package com.jih.controller;
 
-import com.jih.model.QuestionCreateRequest;
-import com.jih.model.QuestionDto;
+import com.jih.dto.QuestionCreateRequest;
+import com.jih.dto.QuestionDto;
 import com.jih.service.QuestionService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;

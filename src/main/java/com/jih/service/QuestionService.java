@@ -1,47 +1,86 @@
 package com.jih.service;
 
-import com.jih.model.QuestionCreateRequest;
-import com.jih.model.QuestionDto;
+import com.jih.dto.QuestionCreateRequest;
+import com.jih.dto.QuestionDto;
+import com.jih.exception.QuestionNotFoundException;
+import com.jih.model.entity.Question;
 import com.jih.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
+@Slf4j
+@Transactional(readOnly = true)
 public class QuestionService {
-    private final QuestionRepository repository;
 
+    private final QuestionRepository questionRepository;
+
+    @Transactional
     public QuestionDto create(QuestionCreateRequest request) {
-        QuestionDto createdQuestion = repository.save(request.question(), request.answer());
+        Question question = createEntity(request);
 
-        log.info("Created question with id {}", createdQuestion.id());
+        Question saved = questionRepository.save(question);
 
-        return createdQuestion;
+        log.info("Created question with id {}", saved.getId());
+
+        return toDto(saved);
     }
 
     public QuestionDto findById(Long id) {
-        return repository.findById(id);
+        return toDto(findQuestionByIdOrThrow(id));
     }
 
     public List<QuestionDto> findAll() {
-        return repository.findAll();
+        return questionRepository.findAll()
+                .stream()
+                .map(this::toDto)
+                .toList();
     }
 
+    @Transactional
     public QuestionDto update(Long id, QuestionCreateRequest request) {
-        QuestionDto updatedQuestion = repository.update(id, request.question(), request.answer());
+        Question question = findQuestionByIdOrThrow(id);
+        question.setQuestion(request.question());
+        question.setAnswer(request.answer());
 
-        log.info("Updated question with id {}", id);
+        Question saved = questionRepository.save(question);
 
-        return updatedQuestion;
+        log.info("Updated question with id {}", saved.getId());
+
+        return toDto(saved);
     }
 
+    @Transactional
     public void delete(Long id) {
-        repository.delete(id);
+        Question question = findQuestionByIdOrThrow(id);
+        questionRepository.delete(question);
 
         log.info("Deleted question with id {}", id);
     }
+
+    private Question findQuestionByIdOrThrow(Long id) {
+        return questionRepository.findById(id)
+                .orElseThrow(() -> new QuestionNotFoundException(id));
+    }
+
+    private Question createEntity(QuestionCreateRequest request) {
+        Question question = new Question();
+        question.setQuestion(request.question());
+        question.setAnswer(request.answer());
+        return question;
+    }
+
+    private QuestionDto toDto(Question question) {
+        return new QuestionDto(
+                question.getId(),
+                question.getQuestion(),
+                question.getAnswer()
+        );
+    }
 }
+

@@ -1,6 +1,6 @@
 package com.jih.config;
 
-import com.jih.model.QuestionCreateRequest;
+import com.jih.dto.QuestionCreateRequest;
 import com.jih.service.QuestionService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

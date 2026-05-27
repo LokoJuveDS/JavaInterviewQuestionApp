@@ -1,4 +1,4 @@
-package com.jih.model;
+package com.jih.dto;
 
 public record QuestionDto(
         Long id,
