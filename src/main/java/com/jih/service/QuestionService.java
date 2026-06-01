@@ -2,8 +2,9 @@ package com.jih.service;
 
 import com.jih.dto.QuestionCreateRequest;
 import com.jih.dto.QuestionDto;
-import com.jih.exception.QuestionNotFoundException;
+import com.jih.exception.ResourceNotFoundException;
 import com.jih.model.entity.Question;
+import com.jih.repository.CategoryRepository;
 import com.jih.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import java.util.List;
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
+    private final CategoryRepository categoryRepository;
 
     @Transactional
     public QuestionDto create(QuestionCreateRequest request) {
@@ -47,6 +49,9 @@ public class QuestionService {
         Question question = findQuestionByIdOrThrow(id);
         question.setQuestion(request.question());
         question.setAnswer(request.answer());
+        question.setLanguage(request.language());
+        question.setCategory(categoryRepository.findById(request.categoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category", request.categoryId())));
 
         Question saved = questionRepository.save(question);
 
@@ -65,13 +70,16 @@ public class QuestionService {
 
     private Question findQuestionByIdOrThrow(Long id) {
         return questionRepository.findById(id)
-                .orElseThrow(() -> new QuestionNotFoundException(id));
+                .orElseThrow(() -> new ResourceNotFoundException("Question", id));
     }
 
     private Question createEntity(QuestionCreateRequest request) {
         Question question = new Question();
         question.setQuestion(request.question());
         question.setAnswer(request.answer());
+        question.setLanguage(request.language());
+        question.setCategory(categoryRepository.findById(request.categoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category", request.categoryId())));
         return question;
     }
 
@@ -79,7 +87,12 @@ public class QuestionService {
         return new QuestionDto(
                 question.getId(),
                 question.getQuestion(),
-                question.getAnswer()
+                question.getAnswer(),
+                question.getLanguage(),
+                question.getCategory().getId(),
+                question.getCategory().getName(),
+                question.getCreatedAt(),
+                question.getUpdatedAt()
         );
     }
 }

@@ -3,6 +3,7 @@
 Features:
  - YP - Add PostgreSQL persistence with JPA and Liquibase
  - YP - Add Question controller and service tests
+ - YP - Add Question UUID, and Category entity
 
 ## jih-app 0.2.0
 
