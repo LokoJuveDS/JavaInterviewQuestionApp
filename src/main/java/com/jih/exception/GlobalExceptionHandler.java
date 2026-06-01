@@ -15,8 +15,8 @@ import java.util.Map;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(QuestionNotFoundException.class)
-    public ResponseEntity<ApiError> handleNotFound(QuestionNotFoundException ex) {
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiError> handleNotFound(ResourceNotFoundException ex) {
         log.warn("Not found: {}", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
