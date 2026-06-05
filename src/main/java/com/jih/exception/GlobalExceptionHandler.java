@@ -27,6 +27,18 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ApiError> handleDuplicateResource(DuplicateResourceException ex) {
+        log.warn("Duplicate resource: {}", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ApiError(
+                        ex.getMessage(),
+                        HttpStatus.CONFLICT.value(),
+                        LocalDateTime.now()
+                ));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationError> handleValidationErrors(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new LinkedHashMap<>();
